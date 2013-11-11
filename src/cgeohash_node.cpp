@@ -6,8 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace cgeohash
-{
+namespace cgeohash {
 
 // Node.JS Hooks to GeoHash encoding
 v8::Handle<v8::Value> encode_fn(const v8::Arguments& args)
@@ -148,18 +147,18 @@ v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
     return scope.Close(cvv8::CastToJS<string_type>(neighbor_string));
 }
 
-void encode_the_point(const char * csv_format, char * csv_buffer, size_t csv_limit, double latitude, double longitude, size_t precision)
+void encode_the_point(const char* csv_format, char* csv_buffer, size_t csv_limit, double latitude, double longitude, size_t precision)
 {
     string_type buffer;
     encode(latitude, longitude, precision, buffer);
 
-    for(size_t i = 0; i < csv_limit; i++) {
+    for (size_t i = 0; i < csv_limit; i++) {
         csv_buffer[i] = 0;
     }
     sprintf(csv_buffer, csv_format, latitude, longitude, precision, buffer.c_str());
 
     std::cout << csv_buffer << std::endl;
-	}
+}
 
 v8::Handle<v8::Value> encode_the_world_fn(const v8::Arguments& args)
 {
@@ -188,22 +187,21 @@ v8::Handle<v8::Value> encode_the_world_fn(const v8::Arguments& args)
     // Longitude has a min/max 2x that of Latitude
     double latitude = -90.0;
     double longitude = -180.0;
-		
-		std::cout << "latitude,longitude,precision,geohash" << std::endl;
-    for(; latitude <= 90 && longitude <= 180;) {
+
+    std::cout << "latitude,longitude,precision,geohash" << std::endl;
+    for (; latitude <= 90 && longitude <= 180;) {
         encode_the_point(csv_format.c_str(), csv_buffer, csv_limit, latitude, longitude, precision);
 
         latitude += increment_amount;
         longitude += increment_amount * 2;
     }
-	
+
     if (!((int)latitude > 90 && (int)longitude > 180)) {
         encode_the_point(csv_format.c_str(), csv_buffer, csv_limit, 90.0, 180.0, precision);
     }
 
     return scope.Close(v8::Undefined());
 }
-
 
 void RegisterModule(v8::Handle<v8::Object> target)
 {
@@ -212,12 +210,10 @@ void RegisterModule(v8::Handle<v8::Object> target)
     node::SetMethod(target, "encode_all_precisions_fn",   encode_all_precisions_fn);
     node::SetMethod(target, "encode_range_precisions_fn", encode_range_precisions_fn);
     node::SetMethod(target, "decode_fn",                  decode_fn);
-    node::SetMethod(target, "decode_bbox_fn",             decode_bbox_fn);
-    node::SetMethod(target, "neighbor_fn",                neighbor_fn);
+    //node::SetMethod(target, "decode_bbox_fn",             decode_bbox_fn);
+    //node::SetMethod(target, "neighbor_fn",                neighbor_fn);
 }
 
-}
+} //namespace cgeohash
 
 NODE_MODULE(cgeohash, cgeohash::RegisterModule);
-
-

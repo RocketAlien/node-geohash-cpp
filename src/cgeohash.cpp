@@ -10,9 +10,7 @@
 
 #include "cgeohash.hpp"
 
-
-namespace cgeohash
-{
+namespace cgeohash {
 
 // Static array of 0-9, a-z
 const char base32_codes[] = {
@@ -59,8 +57,8 @@ const std::map<char, int> build_base32_indexes()
 {
     std::map<char, int> output;
 
-    for(int i = 0, max = 36; i < max; i++) {
-        output.insert( std::pair<char, int>(base32_codes[i], i) );
+    for (int i = 0, max = 36; i < max; i++) {
+        output.insert(std::pair<char, int>(base32_codes[i], i));
     }
 
     return output;
@@ -137,7 +135,7 @@ void encode(const double latitude, const double longitude, unsigned long precisi
 void encode_all_precisions(
     const double latitude,
     const double longitude,
-    std::vector<string_type> & output)
+    string_vector& output)
 {
 	encode_range_precisions(latitude, longitude, 1, 9, output);
 };
@@ -149,7 +147,7 @@ void encode_range_precisions(
     const double longitude,
 		const size_t min,
 		const size_t max,
-    std::vector<string_type> & output)
+    string_vector& output)
 {
 		const size_t num_precisions = max - min + 1;
     output.resize(num_precisions);
@@ -160,7 +158,7 @@ void encode_range_precisions(
 		// Set the "end" value
 		output[num_precisions - 1] = buffer;
 
-    for(int i = num_precisions - 2; i >= 0; --i) {
+    for (int i = num_precisions - 2; i >= 0; --i) {
 			const string_type & last = output[i+1];
 			output[i] = last.substr(0, last.length() -1);
     }
@@ -175,7 +173,8 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
         _hash_string.begin(),
         _hash_string.end(),
         hash_string.begin(),
-        ::tolower);
+        ::tolower
+    );
 
     DecodedBBox output;
     output.maxlat = 90;
@@ -185,7 +184,7 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
 
     bool islon = true;
 
-    for(int i = 0, max = hash_string.length(); i < max; i++) {
+    for (int i = 0, max = hash_string.length(); i < max; i++) {
         int char_index = base32_codes_index_of(hash_string[i]);
 
         for (int bits = 4; bits >= 0; --bits) {
@@ -194,14 +193,17 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
                 double mid = (output.maxlon + output.minlon) / 2;
                 if(bit == 1) {
                     output.minlon = mid;
-                } else {
+                }
+                else {
                     output.maxlon = mid;
                 }
-            } else {
+            }
+            else {
                 double mid = (output.maxlat + output.minlat) / 2;
                 if(bit == 1) {
                     output.minlat = mid;
-                } else {
+                }
+                else {
                     output.maxlat = mid;
                 }
             }
@@ -222,11 +224,11 @@ DecodedHash decode(const string_type & hash_string)
     return output;
 };
 
-string_type neighbor(const string_type & hash_string, const int direction [])
+string_type neighbor(const string_type& hash_string, const int direction[])
 {
     // Adjust the DecodedHash for the direction of the neighbors
     DecodedHash lonlat = decode(hash_string);
-    lonlat.latitude   += direction[0] * lonlat.latitude_err * 2;
+    lonlat.latitude   += direction[0] * lonlat.latitude_err  * 2;
     lonlat.longitude  += direction[1] * lonlat.longitude_err * 2;
 
     string_type output;
@@ -234,9 +236,9 @@ string_type neighbor(const string_type & hash_string, const int direction [])
         lonlat.latitude,
         lonlat.longitude,
         hash_string.length(),
-        output);
+        output
+    );
     return output;
 }
 
-} // end namespace cgeohash
-
+} //namespace cgeohash
