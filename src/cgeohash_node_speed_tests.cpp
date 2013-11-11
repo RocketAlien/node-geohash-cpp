@@ -2,8 +2,7 @@
 #include "cgeohash.hpp"
 #include "cgeohash_node.hpp"
 
-namespace cgeohash
-{
+namespace cgeohash {
 
 // Node.JS Hooks to GeoHash encoding
 v8::Handle<v8::Value> encode_fn(const v8::Arguments& args)
@@ -22,7 +21,7 @@ v8::Handle<v8::Value> encode_fn(const v8::Arguments& args)
     const size_t   num_times = cvv8::CastFromJS< size_t >(args[i++]);
 
     string_type output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         encode(latitude, longitude, precision, output);
     }
 
@@ -44,7 +43,7 @@ v8::Handle<v8::Value> encode_all_precisions_fn(const v8::Arguments& args)
     const size_t num_times = cvv8::CastFromJS< size_t >(args[i++]);
 
     string_vector output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         encode_all_precisions(latitude, longitude, output);
     }
 
@@ -70,7 +69,7 @@ v8::Handle<v8::Value> encode_range_precisions_fn(const v8::Arguments& args)
     const size_t num_times = cvv8::CastFromJS< size_t >(args[i++]);
 
     string_vector output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         encode_range_precisions(latitude, longitude, min, max, output);
     }
 
@@ -90,7 +89,7 @@ v8::Handle<v8::Value> decode_fn(const v8::Arguments& args)
     REQUIRES_STRING_IS_NOT_EMPTY(0, hash_string);
 
     DecodedHash output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         output = decode(hash_string);
     }
 
@@ -131,7 +130,7 @@ v8::Handle<v8::Value> decode_bbox_fn(const v8::Arguments& args)
     REQUIRES_STRING_IS_NOT_EMPTY(0, hash_string);
 
     DecodedBBox output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         output = decode_bbox(hash_string);
     }
 
@@ -168,7 +167,7 @@ v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
         directions.back()   // Only 2 elements
     };
     string_type output;
-    for(size_t i = 0; i < num_times; ++i) {
+    for (size_t i = 0; i < num_times; ++i) {
         output = neighbor(hash_string, directions_array);
     }
 
@@ -177,16 +176,14 @@ v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
 
 void RegisterModule(v8::Handle<v8::Object> target)
 {
-    node::SetMethod(target, "encode_fn",      encode_fn);
-    node::SetMethod(target, "encode_all_precisions_fn",      encode_all_precisions_fn);
-    node::SetMethod(target, "encode_range_precisions_fn",      encode_range_precisions_fn);
-    node::SetMethod(target, "decode_fn",      decode_fn);
-    node::SetMethod(target, "decode_bbox_fn", decode_bbox_fn);
-    node::SetMethod(target, "neighbor_fn",    neighbor_fn);
+    node::SetMethod(target, "encode_fn",                  encode_fn);
+    node::SetMethod(target, "encode_all_precisions_fn",   encode_all_precisions_fn);
+    node::SetMethod(target, "encode_range_precisions_fn", encode_range_precisions_fn);
+    node::SetMethod(target, "decode_fn",                  decode_fn);
+    node::SetMethod(target, "decode_bbox_fn",             decode_bbox_fn);
+    node::SetMethod(target, "neighbor_fn",                neighbor_fn);
 }
 
-}
+} //namespace cgeohash
 
 NODE_MODULE(cgeohash_speed_tests, cgeohash::RegisterModule);
-
-

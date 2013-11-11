@@ -5,5 +5,5 @@ module.exports = {
 		encode_all_precisions: cgeohash.encode_all_precisions_fn,
     decode:                cgeohash.decode_fn,
     decode_bbox:           cgeohash.decode_bbox_fn,
-    neighbor:              cgeohash.neighbor_fn,
+    neighbor:              cgeohash.neighbor_fn
 };

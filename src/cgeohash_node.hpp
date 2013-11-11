@@ -12,7 +12,9 @@ v8::Handle<v8::Value> decode_fn(const v8::Arguments& args);
 v8::Handle<v8::Value> encode_all_precisions_fn(const v8::Arguments& args);
 v8::Handle<v8::Value> decode_bbox_fn(const v8::Arguments& args);
 v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args);
+v8::Handle<v8::Value> neighbors_fn(const v8::Arguments& args);
+v8::Handle<v8::Value> expand_fn(const v8::Arguments& args);
 
-}
+} //namespace cgeohash
 
-#endif /* end hpp */
+#endif //_NODE_CGEOHASH_NODE_HPP

@@ -10,12 +10,10 @@
 
 #include "cgeohash.hpp"
 
-
-namespace cgeohash
-{
+namespace cgeohash {
 
 // Static array of 0-9, a-z
-const char base32_codes[] = {
+static const char base32_codes[] = {
     '0',
     '1',
     '2',
@@ -50,6 +48,18 @@ const char base32_codes[] = {
     'z'
 };
 
+static const int num_neighbors = 8;
+static const int neighbor_directions[][num_neighbors] = {
+    {1, 0},
+    {1, 1},
+    {0, 1},
+    {-1, 1},
+    {-1, 0},
+    {-1, -1},
+    {0, -1},
+    {1, -1},
+};
+
 // Build a map of characters -> index position from the above array
 const std::map<char, int> build_base32_indexes();
 const std::map<char, int> base32_indexes = build_base32_indexes();
@@ -59,8 +69,8 @@ const std::map<char, int> build_base32_indexes()
 {
     std::map<char, int> output;
 
-    for(int i = 0, max = 36; i < max; i++) {
-        output.insert( std::pair<char, int>(base32_codes[i], i) );
+    for (int i = 0, max = 36; i < max; i++) {
+        output.insert(std::pair<char, int>(base32_codes[i], i));
     }
 
     return output;
@@ -95,22 +105,25 @@ void encode(const double latitude, const double longitude, unsigned long precisi
     output = string_type(precision, ' ');
     unsigned int output_length = 0;
 
-    while(output_length < precision) {
+    while (output_length < precision) {
         if (islon) {
             mid = (bbox.maxlon + bbox.minlon) / 2;
-            if(longitude > mid) {
+            if (longitude > mid) {
                 hash_index = (hash_index << 1) + 1;
                 bbox.minlon=mid;
-            } else {
+            }
+            else {
                 hash_index = (hash_index << 1) + 0;
                 bbox.maxlon=mid;
             }
-        } else {
+        }
+        else {
             mid = (bbox.maxlat + bbox.minlat) / 2;
-            if(latitude > mid ) {
+            if (latitude > mid ) {
                 hash_index = (hash_index << 1) + 1;
                 bbox.minlat = mid;
-            } else {
+            }
+            else {
                 hash_index = (hash_index << 1) + 0;
                 bbox.maxlat = mid;
             }
@@ -130,16 +143,14 @@ void encode(const double latitude, const double longitude, unsigned long precisi
     }
 };
 
-
-
 // Encode a pair of latitude and longitude into geohash
 // All Precisions from [1 to 9] (inclusive)
 void encode_all_precisions(
     const double latitude,
     const double longitude,
-    std::vector<string_type> & output)
+    string_vector& output)
 {
-	encode_range_precisions(latitude, longitude, 1, 9, output);
+    encode_range_precisions(latitude, longitude, 1, 9, output);
 };
 
 // Encode a pair of latitude and longitude into geohash
@@ -147,22 +158,22 @@ void encode_all_precisions(
 void encode_range_precisions(
     const double latitude,
     const double longitude,
-		const size_t min,
-		const size_t max,
-    std::vector<string_type> & output)
+    const size_t min,
+    const size_t max,
+    string_vector& output)
 {
-		const size_t num_precisions = max - min + 1;
+    const size_t num_precisions = max - min + 1;
     output.resize(num_precisions);
 
     string_type buffer;
     encode(latitude, longitude, max, buffer);
-		
-		// Set the "end" value
-		output[num_precisions - 1] = buffer;
 
-    for(int i = num_precisions - 2; i >= 0; --i) {
-			const string_type & last = output[i+1];
-			output[i] = last.substr(0, last.length() -1);
+    // Set the "end" value
+    output[num_precisions - 1] = buffer;
+
+    for (int i = num_precisions - 2; i >= 0; --i) {
+        const string_type & last = output[i+1];
+        output[i] = last.substr(0, last.length() -1);
     }
 };
 
@@ -175,7 +186,8 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
         _hash_string.begin(),
         _hash_string.end(),
         hash_string.begin(),
-        ::tolower);
+        ::tolower
+    );
 
     DecodedBBox output;
     output.maxlat = 90;
@@ -185,7 +197,7 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
 
     bool islon = true;
 
-    for(int i = 0, max = hash_string.length(); i < max; i++) {
+    for (int i = 0, max = hash_string.length(); i < max; i++) {
         int char_index = base32_codes_index_of(hash_string[i]);
 
         for (int bits = 4; bits >= 0; --bits) {
@@ -194,14 +206,17 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
                 double mid = (output.maxlon + output.minlon) / 2;
                 if(bit == 1) {
                     output.minlon = mid;
-                } else {
+                }
+                else {
                     output.maxlon = mid;
                 }
-            } else {
+            }
+            else {
                 double mid = (output.maxlat + output.minlat) / 2;
                 if(bit == 1) {
                     output.minlat = mid;
-                } else {
+                }
+                else {
                     output.maxlat = mid;
                 }
             }
@@ -222,21 +237,76 @@ DecodedHash decode(const string_type & hash_string)
     return output;
 };
 
-string_type neighbor(const string_type & hash_string, const int direction [])
+string_type neighbor(const string_type& hash_string, const int direction[])
 {
     // Adjust the DecodedHash for the direction of the neighbors
     DecodedHash lonlat = decode(hash_string);
-    lonlat.latitude   += direction[0] * lonlat.latitude_err * 2;
-    lonlat.longitude  += direction[1] * lonlat.longitude_err * 2;
+    lonlat.latitude  += direction[0] * lonlat.latitude_err  * 2;
+    lonlat.longitude += direction[1] * lonlat.longitude_err * 2;
 
     string_type output;
     encode(
         lonlat.latitude,
         lonlat.longitude,
         hash_string.length(),
-        output);
+        output
+    );
     return output;
 }
 
-} // end namespace cgeohash
+string_vector neighbors(const string_type& hash_string)
+{
+    DecodedHash lonlat = decode(hash_string);
 
+    double latitude      = lonlat.latitude;
+    double longitude     = lonlat.longitude;
+    double latitude_err  = lonlat.latitude_err  * 2;
+    double longitude_err = lonlat.longitude_err * 2;
+    size_t length        = hash_string.length();
+
+    string_vector output(num_neighbors);
+
+    for (int i = 0; i < num_neighbors; i++) {
+        const int* direction = neighbor_directions[i];
+        double neighbor_latitude  = latitude  + direction[0] * latitude_err;
+        double neighbor_longitude = longitude + direction[1] * longitude_err;
+        encode(
+            neighbor_latitude,
+            neighbor_longitude,
+            length,
+            output[i]
+        );
+    }
+
+    return output;
+}
+
+string_vector expand(const string_type& hash_string)
+{
+    DecodedHash lonlat = decode(hash_string);
+
+    double latitude      = lonlat.latitude;
+    double longitude     = lonlat.longitude;
+    double latitude_err  = lonlat.latitude_err  * 2;
+    double longitude_err = lonlat.longitude_err * 2;
+    size_t length        = hash_string.length();
+
+    string_vector output(num_neighbors + 1);
+
+    for (int i = 0; i < num_neighbors; i++) {
+        const int* direction = neighbor_directions[i];
+        double neighbor_latitude  = latitude  + direction[0] * latitude_err;
+        double neighbor_longitude = longitude + direction[1] * longitude_err;
+        encode(
+            neighbor_latitude,
+            neighbor_longitude,
+            length,
+            output[i]
+        );
+    }
+
+    output[num_neighbors] = hash_string;
+    return output;
+}
+
+} //namespace cgeohash

@@ -5,6 +5,10 @@
         {
             "email": "classicning@gmail.com", 
             "name": "Sun Ning"
+        },
+        {
+            "email": "dmitri@rocketalien.com",
+            "name": "Dmitri Bouianov"
         }
     ], 
     "dependencies": {
@@ -17,7 +21,7 @@
         "ngeohash": "0.2.0", 
         "sprintf": "*", 
         "v8-profiler-table": ">=1.2.0",
-				"titlecaps": "*"
+        "titlecaps": "*"
     }, 
     "engines": {
         "node": ">=v0.8.14"
@@ -43,5 +47,5 @@
         "postinstall": "node-gyp configure rebuild", 
         "test": "npm install && npm update && node-gyp configure build && mocha --reporter spec ./tests/shared_spec.js && mocha --reporter spec ./tests/speed_spec.js | grep Total | sort | tee -a ./speeds.log; date >>  ./speeds.log"
     }, 
-    "version": "1.5.0"
+    "version": "1.6.0"
 }

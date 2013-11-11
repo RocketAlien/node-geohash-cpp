@@ -1,7 +1,7 @@
 {
-  "target_defaults": {
-    "include_dirs": ["./includes"]
-  },
+    "target_defaults": {
+        "include_dirs": ["./includes"]
+    },
     "conditions": [
         [
             "OS=='win'", 
@@ -11,17 +11,18 @@
     ], 
     "targets": [
         {
-          "cflags!": [
-              "-fno-exceptions",
-              "-O3",
-              "-I./includes/cvv8",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags_cc!": [ 
-              "-fno-exceptions",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags": [ "-O3" ],
+            "target_name": "cgeohash",
+            "cflags!": [
+                "-fno-exceptions",
+                "-O3",
+                "-I./includes/cvv8",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags_cc!": [
+                "-fno-exceptions",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags": [ "-O3" ],
             "conditions": [
                 [
                     "OS=='mac'", 
@@ -36,21 +37,21 @@
             "sources": [
                 "src/cgeohash.cpp",
                 "src/cgeohash_node.cpp"
-            ], 
-            "target_name": "cgeohash"
+            ]
         },
         {
-          "cflags!": [
-              "-fno-exceptions",
-              "-O3",
-              "-I./includes/cvv8",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags_cc!": [ 
-              "-fno-exceptions",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags": [ "-O3" ],
+            "target_name": "cgeohash_speed_tests",
+            "cflags!": [
+                "-fno-exceptions",
+                "-O3",
+                "-I./includes/cvv8",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags_cc!": [
+                "-fno-exceptions",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags": [ "-O3" ],
             "conditions": [
                 [
                     "OS=='mac'", 
@@ -66,21 +67,21 @@
             "sources": [
                 "src/cgeohash_node_speed_tests.cpp",
                 "src/cgeohash.cpp"
-            ], 
-            "target_name": "cgeohash_speed_tests"
+            ]
         },
         {
-          "cflags!": [
-              "-fno-exceptions",
-              "-O3",
-              "-I./includes/cvv8",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags_cc!": [ 
-              "-fno-exceptions",
-              "-Wno-missing-field-initializers",
-              "-Wno-unused" ],
-          "cflags": [ "-O3" ],
+            "target_name": "cgeohash_lib",
+            "cflags!": [
+                "-fno-exceptions",
+                "-O3",
+                "-I./includes/cvv8",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags_cc!": [
+                "-fno-exceptions",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused" ],
+            "cflags": [ "-O3" ],
             "conditions": [
                 [
                     "OS=='mac'", 
@@ -104,8 +105,7 @@
                 "include_dirs": [
                     "src",
                 ],
-            },
-            "target_name": "cgeohash_lib"
+            }
         }
     ]
 }
