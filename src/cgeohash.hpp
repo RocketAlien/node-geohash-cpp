@@ -60,9 +60,9 @@ DecodedBBox decode_bbox(const string_type& hash_string);
 // Ex: [-1,-1] == southwest
 string_type neighbor(const string_type& hash_string, const int direction[]);
 
-//string_vector neighbors(const std::string& hash_string);
+string_vector neighbors(const string_type& hash_string);
 
-//string_vector expand(const std::string& hash_string);
+string_vector expand(const string_type& hash_string);
 
 } //namespace cgeohash
 

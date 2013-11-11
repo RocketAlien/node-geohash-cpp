@@ -93,22 +93,25 @@ void encode(const double latitude, const double longitude, unsigned long precisi
     output = string_type(precision, ' ');
     unsigned int output_length = 0;
 
-    while(output_length < precision) {
+    while (output_length < precision) {
         if (islon) {
             mid = (bbox.maxlon + bbox.minlon) / 2;
-            if(longitude > mid) {
+            if (longitude > mid) {
                 hash_index = (hash_index << 1) + 1;
                 bbox.minlon=mid;
-            } else {
+            }
+            else {
                 hash_index = (hash_index << 1) + 0;
                 bbox.maxlon=mid;
             }
-        } else {
+        }
+        else {
             mid = (bbox.maxlat + bbox.minlat) / 2;
-            if(latitude > mid ) {
+            if (latitude > mid ) {
                 hash_index = (hash_index << 1) + 1;
                 bbox.minlat = mid;
-            } else {
+            }
+            else {
                 hash_index = (hash_index << 1) + 0;
                 bbox.maxlat = mid;
             }
@@ -128,8 +131,6 @@ void encode(const double latitude, const double longitude, unsigned long precisi
     }
 };
 
-
-
 // Encode a pair of latitude and longitude into geohash
 // All Precisions from [1 to 9] (inclusive)
 void encode_all_precisions(
@@ -137,7 +138,7 @@ void encode_all_precisions(
     const double longitude,
     string_vector& output)
 {
-	encode_range_precisions(latitude, longitude, 1, 9, output);
+    encode_range_precisions(latitude, longitude, 1, 9, output);
 };
 
 // Encode a pair of latitude and longitude into geohash
@@ -145,22 +146,22 @@ void encode_all_precisions(
 void encode_range_precisions(
     const double latitude,
     const double longitude,
-		const size_t min,
-		const size_t max,
+    const size_t min,
+    const size_t max,
     string_vector& output)
 {
-		const size_t num_precisions = max - min + 1;
+    const size_t num_precisions = max - min + 1;
     output.resize(num_precisions);
 
     string_type buffer;
     encode(latitude, longitude, max, buffer);
-		
-		// Set the "end" value
-		output[num_precisions - 1] = buffer;
+
+    // Set the "end" value
+    output[num_precisions - 1] = buffer;
 
     for (int i = num_precisions - 2; i >= 0; --i) {
-			const string_type & last = output[i+1];
-			output[i] = last.substr(0, last.length() -1);
+        const string_type & last = output[i+1];
+        output[i] = last.substr(0, last.length() -1);
     }
 };
 
@@ -239,6 +240,14 @@ string_type neighbor(const string_type& hash_string, const int direction[])
         output
     );
     return output;
+}
+
+string_vector neighbors(const string_type& hash_string)
+{
+}
+
+string_vector expand(const string_type& hash_string)
+{
 }
 
 } //namespace cgeohash

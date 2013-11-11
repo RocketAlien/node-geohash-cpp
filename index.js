@@ -8,6 +8,6 @@ module.exports = {
     decode:                  cgeohash.decode_fn,
     decode_bbox:             cgeohash.decode_bbox_fn,
     neighbor:                cgeohash.neighbor_fn
-    //neighbors:               cgeohash.neighbors_fn,
-    //expand:                  cgeohash.expand_fn
+    neighbors:               cgeohash.neighbors_fn,
+    expand:                  cgeohash.expand_fn
 };
