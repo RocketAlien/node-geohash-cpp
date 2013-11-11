@@ -283,7 +283,29 @@ string_vector neighbors(const string_type& hash_string)
 
 string_vector expand(const string_type& hash_string)
 {
-    string_vector output;
+    DecodedHash lonlat = decode(hash_string);
+
+    double latitude      = lonlat.latitude;
+    double longitude     = lonlat.longitude;
+    double latitude_err  = lonlat.latitude_err  * 2;
+    double longitude_err = lonlat.longitude_err * 2;
+    size_t length        = hash_string.length();
+
+    string_vector output(num_neighbors + 1);
+
+    for (int i = 0; i < num_neighbors; i++) {
+        const int* direction = neighbor_directions[i];
+        double neighbor_latitude  = latitude  + direction[0] * latitude_err;
+        double neighbor_longitude = longitude + direction[1] * longitude_err;
+        encode(
+            neighbor_latitude,
+            neighbor_longitude,
+            length,
+            output[i]
+        );
+    }
+
+    output[output.size() - 1] = hash_string;
     return output;
 }
 
