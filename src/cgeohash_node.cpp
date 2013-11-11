@@ -249,7 +249,7 @@ void RegisterModule(v8::Handle<v8::Object> target)
     node::SetMethod(target, "decode_bbox_fn",             decode_bbox_fn);
     node::SetMethod(target, "neighbor_fn",                neighbor_fn);
     node::SetMethod(target, "neighbors_fn",               neighbors_fn);
-    node::SetMethod(target, "expand_fn",                  neighbors_fn);
+    node::SetMethod(target, "expand_fn",                  expand_fn);
 }
 
 } //namespace cgeohash

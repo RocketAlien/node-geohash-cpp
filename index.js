@@ -7,7 +7,7 @@ module.exports = {
 		encode_range_precisions: cgeohash.encode_range_precisions_fn,
     decode:                  cgeohash.decode_fn,
     decode_bbox:             cgeohash.decode_bbox_fn,
-    neighbor:                cgeohash.neighbor_fn
+    neighbor:                cgeohash.neighbor_fn,
     neighbors:               cgeohash.neighbors_fn,
     expand:                  cgeohash.expand_fn
 };
