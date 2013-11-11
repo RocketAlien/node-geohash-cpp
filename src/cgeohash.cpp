@@ -88,7 +88,7 @@ int base32_codes_index_of(char c)
     return base32_indexes.find(c)->second;
 }
 
-void encode(const double latitude, const double longitude, unsigned long precision, string_type & output)
+void encode(const double latitude, const double longitude, unsigned long precision, string_type& output)
 {
     // DecodedBBox for the lat/lon + errors
     DecodedBBox bbox;
@@ -177,7 +177,7 @@ void encode_range_precisions(
     }
 };
 
-DecodedBBox decode_bbox(const string_type & _hash_string)
+DecodedBBox decode_bbox(const string_type& _hash_string)
 {
     // Copy of the string down-cased
     // Wish this was ruby, then it would be simple: _hash_string.downcase();
@@ -226,7 +226,7 @@ DecodedBBox decode_bbox(const string_type & _hash_string)
     return output;
 }
 
-DecodedHash decode(const string_type & hash_string)
+DecodedHash decode(const string_type& hash_string)
 {
     DecodedBBox bbox = decode_bbox(hash_string);
     DecodedHash output;
@@ -306,6 +306,9 @@ string_vector expand(const string_type& hash_string)
     }
 
     output[num_neighbors] = hash_string;
+    for (string_vector::iterator it = output.begin(); it != output.end(); it++) {
+        std::cout << *it << std::endl;
+    }
     return output;
 }
 
