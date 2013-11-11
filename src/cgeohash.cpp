@@ -306,9 +306,6 @@ string_vector expand(const string_type& hash_string)
     }
 
     output[num_neighbors] = hash_string;
-    for (string_vector::iterator it = output.begin(); it != output.end(); it++) {
-        std::cout << *it << std::endl;
-    }
     return output;
 }
 
