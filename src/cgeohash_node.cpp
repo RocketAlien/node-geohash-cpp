@@ -127,7 +127,7 @@ v8::Handle<v8::Value> decode_bbox_fn(const v8::Arguments& args)
     list.push_back(decoded_bbox.maxlat);
     list.push_back(decoded_bbox.maxlon);
 
-    return scope.Close(cvv8::CastToJS< std::list<double> >(list));
+    return scope.Close(cvv8::CastToJS<std::list<double> >(list));
 }
 
 v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
@@ -145,9 +145,10 @@ v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
         return THROW_EXCEPTION("Parameter 1 must be an array with 2 numbers");
     }
 
+    // Only 2 elements
     const int directions_array[] = {
-        directions.front(), // Only 2 elements
-        directions.back()   // Only 2 elements
+        directions[0],
+        directions[1]
     };
     const string_type neighbor_string = neighbor(hash_string, directions_array);
 
@@ -156,10 +157,30 @@ v8::Handle<v8::Value> neighbor_fn(const v8::Arguments& args)
 
 v8::Handle<v8::Value> neighbors_fn(const v8::Arguments& args)
 {
+    v8::HandleScope scope;
+    REQUIRES_PARAM_LENGTH(1);
+    REQUIRES_PARAM_IS_STRING(0);
+
+    const string_type hash_string = cvv8::CastFromJS<string_type>(args[0]);
+    REQUIRES_STRING_IS_NOT_EMPTY(0, hash_string);
+
+    const string_vector neighbor_strings = neighbors(hash_string);
+
+    return scope.Close(cvv8::CastToJS<string_vector>(neighbor_strings));
 }
 
 v8::Handle<v8::Value> expand_fn(const v8::Arguments& args)
 {
+    v8::HandleScope scope;
+    REQUIRES_PARAM_LENGTH(1);
+    REQUIRES_PARAM_IS_STRING(0);
+
+    const string_type hash_string = cvv8::CastFromJS<string_type>(args[0]);
+    REQUIRES_STRING_IS_NOT_EMPTY(0, hash_string);
+
+    const string_vector hash_strings = expand(hash_string);
+
+    return scope.Close(cvv8::CastToJS<string_vector>(hash_strings));
 }
 
 void encode_the_point(const char* csv_format, char* csv_buffer, size_t csv_limit, double latitude, double longitude, size_t precision)
@@ -183,8 +204,8 @@ v8::Handle<v8::Value> encode_the_world_fn(const v8::Arguments& args)
     REQUIRES_PARAM_IS_NUMBER(1);
 
     int i = 0;
-    const size_t precision      = cvv8::CastFromJS< size_t >(args[i++]);
-    const size_t decimal_places = cvv8::CastFromJS< size_t >(args[i++]);
+    const size_t precision      = cvv8::CastFromJS<size_t>(args[i++]);
+    const size_t decimal_places = cvv8::CastFromJS<size_t>(args[i++]);
     const double increment_amount = 1.0 / pow((double)10.0, (double)decimal_places);
 
     string_type csv_format;

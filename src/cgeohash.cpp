@@ -13,7 +13,7 @@
 namespace cgeohash {
 
 // Static array of 0-9, a-z
-const char base32_codes[] = {
+static const char base32_codes[] = {
     '0',
     '1',
     '2',
@@ -46,6 +46,18 @@ const char base32_codes[] = {
     'x',
     'y',
     'z'
+};
+
+static const int num_neighbors = 8;
+static const int neighbor_directions[][num_neighbors] = {
+    {1, 0},
+    {1, 1},
+    {0, 1},
+    {-1, 1},
+    {-1, 0},
+    {-1, -1},
+    {0, -1},
+    {1, -1},
 };
 
 // Build a map of characters -> index position from the above array
@@ -229,8 +241,8 @@ string_type neighbor(const string_type& hash_string, const int direction[])
 {
     // Adjust the DecodedHash for the direction of the neighbors
     DecodedHash lonlat = decode(hash_string);
-    lonlat.latitude   += direction[0] * lonlat.latitude_err  * 2;
-    lonlat.longitude  += direction[1] * lonlat.longitude_err * 2;
+    lonlat.latitude  += direction[0] * lonlat.latitude_err  * 2;
+    lonlat.longitude += direction[1] * lonlat.longitude_err * 2;
 
     string_type output;
     encode(
@@ -244,10 +256,35 @@ string_type neighbor(const string_type& hash_string, const int direction[])
 
 string_vector neighbors(const string_type& hash_string)
 {
+    DecodedHash lonlat = decode(hash_string);
+
+    double latitude      = lonlat.latitude;
+    double longitude     = lonlat.longitude;
+    double latitude_err  = lonlat.latitude_err  * 2;
+    double longitude_err = lonlat.longitude_err * 2;
+    size_t length        = hash_string.length();
+
+    string_vector output(num_neighbors);
+
+    for (int i = 0; i < num_neighbors; i++) {
+        const int* direction = neighbor_directions[i];
+        double neighbor_latitude  = latitude  + direction[0] * latitude_err;
+        double neighbor_longitude = longitude + direction[1] * longitude_err;
+        encode(
+            neighbor_latitude,
+            neighbor_longitude,
+            length,
+            output[i]
+        );
+    }
+
+    return output;
 }
 
 string_vector expand(const string_type& hash_string)
 {
+    string_vector output;
+    return output;
 }
 
 } //namespace cgeohash
