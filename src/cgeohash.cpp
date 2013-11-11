@@ -305,7 +305,7 @@ string_vector expand(const string_type& hash_string)
         );
     }
 
-    output[output.size() - 1] = hash_string;
+    output[num_neighbors] = hash_string;
     return output;
 }
 
