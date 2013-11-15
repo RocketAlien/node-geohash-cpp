@@ -38,6 +38,15 @@ two-element array, i.e. [1,0] means north, [-1,-1] means southwest.
 Decode hashstring into a bound box matches it. Data returned in a four-element
 array: [minlat, minlon, maxlat, maxlon]
 
+### geohash.neighbors (hashstring)
+
+Return neighbors of a geohash string in all 8 directions.
+
+### geohash.expand (hashstring)
+
+Return neighbors of a geohash string plus the center geohash string itself,
+useful for DB queries.
+
 About Geohash
 -------------
 
